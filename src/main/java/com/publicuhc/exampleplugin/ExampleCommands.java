@@ -34,8 +34,10 @@ public class ExampleCommands {
     @CommandMethod
     public void translate(CommandRequest request) {
         String firstArg = request.getFirstArg();
-        if(null == firstArg)
-            request.sendMessage(ChatColor.RED+"Must supply a key");
+        if(null == firstArg) {
+            request.sendMessage(ChatColor.RED + "Must supply a key");
+            return;
+        }
         request.sendMessage(m_translate.translate(firstArg, m_translate.getLocaleForSender(request.getSender())));
     }
 
