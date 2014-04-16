@@ -14,3 +14,7 @@ commands:
     description: Returns the translated key
     usage: /<command> keyname
     aliases: [exampletranslate]
+  config:
+    description: Show a config value
+    usage: /<command>
+    aliases: [exampleconfig]

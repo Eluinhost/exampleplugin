@@ -6,6 +6,7 @@ import com.publicuhc.pluginframework.commands.requests.CommandRequest;
 import com.publicuhc.pluginframework.commands.requests.SenderType;
 import com.publicuhc.pluginframework.commands.routing.BaseMethodRoute;
 import com.publicuhc.pluginframework.commands.routing.MethodRoute;
+import com.publicuhc.pluginframework.configuration.Configurator;
 import com.publicuhc.pluginframework.shaded.inject.Inject;
 import com.publicuhc.pluginframework.translate.Translate;
 import org.bukkit.ChatColor;
@@ -15,10 +16,12 @@ import java.util.regex.Pattern;
 public class ExampleCommands {
 
     private final Translate m_translate;
+    private final Configurator m_configurator;
 
     @Inject
-    protected ExampleCommands(Translate translate) {
+    protected ExampleCommands(Translate translate, Configurator configurator) {
         m_translate = translate;
+        m_configurator = configurator;
     }
 
     @CommandMethod
@@ -44,5 +47,15 @@ public class ExampleCommands {
     @RouteInfo
     public MethodRoute translateDetails() {
         return new BaseMethodRoute(Pattern.compile(".*"), new SenderType[] { SenderType.CONSOLE }, "bukkit.command.tell", "translate");
+    }
+
+    @CommandMethod
+    public void exampleConfig(CommandRequest request) {
+        request.sendMessage(m_configurator.getConfig("exampleconfig").getString("exampleString"));
+    }
+
+    @RouteInfo
+    public MethodRoute exampleConfigDetails() {
+        return new BaseMethodRoute(Pattern.compile(".*"), new SenderType[] { SenderType.CONSOLE }, "bukkit.command.tell", "config");
     }
 }
