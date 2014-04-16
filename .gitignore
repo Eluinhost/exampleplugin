@@ -1,0 +1,4 @@
+/atlassian-ide-plugin.xml
+/*.iml
+/.idea/
+/dependency-reduced-pom.xml

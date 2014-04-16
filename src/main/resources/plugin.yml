@@ -1,0 +1,16 @@
+name: ExamplePlugin
+main: com.publicuhc.exampleplugin.ExamplePlugin
+version: 0.1
+description: Example plugin for PluginFramework
+author: ghowden/Eluinhost
+website: publicuhc.com
+database: false
+commands:
+  echo:
+    description: Echo whatever follows to the sender
+    usage: /<command> message to echo
+    aliases: [exampleecho]
+  translate:
+    description: Returns the translated key
+    usage: /<command> keyname
+    aliases: [exampletranslate]
