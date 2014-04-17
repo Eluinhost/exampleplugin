@@ -2,16 +2,15 @@ package com.publicuhc.exampleplugin;
 
 import com.publicuhc.pluginframework.commands.annotation.CommandMethod;
 import com.publicuhc.pluginframework.commands.annotation.RouteInfo;
+import com.publicuhc.pluginframework.commands.matchers.AnyRouteMatcher;
 import com.publicuhc.pluginframework.commands.requests.CommandRequest;
 import com.publicuhc.pluginframework.commands.requests.SenderType;
-import com.publicuhc.pluginframework.commands.routing.BaseMethodRoute;
+import com.publicuhc.pluginframework.commands.routing.DefaultMethodRoute;
 import com.publicuhc.pluginframework.commands.routing.MethodRoute;
 import com.publicuhc.pluginframework.configuration.Configurator;
 import com.publicuhc.pluginframework.shaded.inject.Inject;
 import com.publicuhc.pluginframework.translate.Translate;
 import org.bukkit.ChatColor;
-
-import java.util.regex.Pattern;
 
 public class ExampleCommands {
 
@@ -31,7 +30,7 @@ public class ExampleCommands {
 
     @RouteInfo
     public MethodRoute echoCommandDetails() {
-        return new BaseMethodRoute(Pattern.compile(".*"), new SenderType[] { SenderType.CONSOLE }, "bukkit.command.tell", "echo");
+        return new DefaultMethodRoute(new AnyRouteMatcher(), new SenderType[] { SenderType.CONSOLE }, "bukkit.command.tell", "echo");
     }
 
     @CommandMethod
@@ -46,7 +45,7 @@ public class ExampleCommands {
 
     @RouteInfo
     public MethodRoute translateDetails() {
-        return new BaseMethodRoute(Pattern.compile(".*"), new SenderType[] { SenderType.CONSOLE }, "bukkit.command.tell", "translate");
+        return new DefaultMethodRoute(new AnyRouteMatcher(), new SenderType[] { SenderType.CONSOLE }, "bukkit.command.tell", "translate");
     }
 
     @CommandMethod
@@ -56,6 +55,6 @@ public class ExampleCommands {
 
     @RouteInfo
     public MethodRoute exampleConfigDetails() {
-        return new BaseMethodRoute(Pattern.compile(".*"), new SenderType[] { SenderType.CONSOLE }, "bukkit.command.tell", "config");
+        return new DefaultMethodRoute(new AnyRouteMatcher(), new SenderType[] { SenderType.CONSOLE }, "bukkit.command.tell", "config");
     }
 }
