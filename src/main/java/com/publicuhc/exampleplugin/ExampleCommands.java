@@ -2,11 +2,12 @@ package com.publicuhc.exampleplugin;
 
 import com.publicuhc.pluginframework.commands.annotation.CommandMethod;
 import com.publicuhc.pluginframework.commands.annotation.RouteInfo;
-import com.publicuhc.pluginframework.commands.matchers.AnyRouteMatcher;
 import com.publicuhc.pluginframework.commands.requests.CommandRequest;
 import com.publicuhc.pluginframework.commands.requests.SenderType;
-import com.publicuhc.pluginframework.commands.routing.DefaultMethodRoute;
-import com.publicuhc.pluginframework.commands.routing.MethodRoute;
+import com.publicuhc.pluginframework.commands.routing.BaseRoute;
+import com.publicuhc.pluginframework.commands.routing.CommandRestrictedRoute;
+import com.publicuhc.pluginframework.commands.routing.Route;
+import com.publicuhc.pluginframework.commands.routing.SenderTypeRestrictedRoute;
 import com.publicuhc.pluginframework.configuration.Configurator;
 import com.publicuhc.pluginframework.shaded.inject.Inject;
 import com.publicuhc.pluginframework.translate.Translate;
@@ -25,12 +26,17 @@ public class ExampleCommands {
 
     @CommandMethod
     public void echoCommand(CommandRequest request) {
-        request.sendMessage(request.getMatcherResult().group(0));
+        StringBuilder builder = new StringBuilder();
+        for(String s : request.getArgs()) {
+            builder.append(s).append(" ");
+        }
+        builder.substring(0, builder.length());
+        request.sendMessage(builder.toString());
     }
 
     @RouteInfo
-    public MethodRoute echoCommandDetails() {
-        return new DefaultMethodRoute(new AnyRouteMatcher(), new SenderType[] { SenderType.CONSOLE }, "bukkit.command.tell", "echo");
+    public Route echoCommandDetails() {
+        return new CommandRestrictedRoute(new BaseRoute(), "echo");
     }
 
     @CommandMethod
@@ -44,8 +50,9 @@ public class ExampleCommands {
     }
 
     @RouteInfo
-    public MethodRoute translateDetails() {
-        return new DefaultMethodRoute(new AnyRouteMatcher(), new SenderType[] { SenderType.CONSOLE }, "bukkit.command.tell", "translate");
+    public Route translateDetails() {
+        CommandRestrictedRoute route = new CommandRestrictedRoute(new BaseRoute(), "translate");
+        return new SenderTypeRestrictedRoute(route, SenderType.CONSOLE);
     }
 
     @CommandMethod
@@ -54,7 +61,7 @@ public class ExampleCommands {
     }
 
     @RouteInfo
-    public MethodRoute exampleConfigDetails() {
-        return new DefaultMethodRoute(new AnyRouteMatcher(), new SenderType[] { SenderType.CONSOLE }, "bukkit.command.tell", "config");
+    public Route exampleConfigDetails() {
+        return new CommandRestrictedRoute(new BaseRoute(), "config");
     }
 }
