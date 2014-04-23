@@ -4,10 +4,7 @@ import com.publicuhc.pluginframework.commands.annotation.CommandMethod;
 import com.publicuhc.pluginframework.commands.annotation.RouteInfo;
 import com.publicuhc.pluginframework.commands.requests.CommandRequest;
 import com.publicuhc.pluginframework.commands.requests.SenderType;
-import com.publicuhc.pluginframework.commands.routing.BaseRoute;
-import com.publicuhc.pluginframework.commands.routing.CommandRestrictedRoute;
-import com.publicuhc.pluginframework.commands.routing.Route;
-import com.publicuhc.pluginframework.commands.routing.SenderTypeRestrictedRoute;
+import com.publicuhc.pluginframework.commands.routing.*;
 import com.publicuhc.pluginframework.configuration.Configurator;
 import com.publicuhc.pluginframework.shaded.inject.Inject;
 import com.publicuhc.pluginframework.translate.Translate;
@@ -35,8 +32,9 @@ public class ExampleCommands {
     }
 
     @RouteInfo
-    public Route echoCommandDetails() {
-        return new CommandRestrictedRoute(new BaseRoute(), "echo");
+    public Route echoCommandDetails(RouteBuilder builder) {
+        builder.restrictCommand("echo");
+        return builder.build();
     }
 
     @CommandMethod
@@ -50,9 +48,10 @@ public class ExampleCommands {
     }
 
     @RouteInfo
-    public Route translateDetails() {
-        CommandRestrictedRoute route = new CommandRestrictedRoute(new BaseRoute(), "translate");
-        return new SenderTypeRestrictedRoute(route, SenderType.CONSOLE);
+    public Route translateDetails(RouteBuilder builder) {
+        builder.restrictCommand("translate");
+        builder.restrictSenderType(SenderType.CONSOLE);
+        return builder.build();
     }
 
     @CommandMethod
@@ -61,7 +60,8 @@ public class ExampleCommands {
     }
 
     @RouteInfo
-    public Route exampleConfigDetails() {
-        return new CommandRestrictedRoute(new BaseRoute(), "config");
+    public Route exampleConfigDetails(RouteBuilder builder) {
+        builder.restrictCommand("config");
+        return builder.build();
     }
 }
