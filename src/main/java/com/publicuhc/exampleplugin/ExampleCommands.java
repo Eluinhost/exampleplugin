@@ -32,9 +32,8 @@ public class ExampleCommands {
     }
 
     @RouteInfo
-    public Route echoCommandDetails(RouteBuilder builder) {
+    public void echoCommandDetails(RouteBuilder builder) {
         builder.restrictCommand("echo");
-        return builder.build();
     }
 
     @CommandMethod
@@ -48,10 +47,9 @@ public class ExampleCommands {
     }
 
     @RouteInfo
-    public Route translateDetails(RouteBuilder builder) {
+    public void translateDetails(RouteBuilder builder) {
         builder.restrictCommand("translate");
         builder.restrictSenderType(SenderType.CONSOLE);
-        return builder.build();
     }
 
     @CommandMethod
@@ -60,8 +58,7 @@ public class ExampleCommands {
     }
 
     @RouteInfo
-    public Route exampleConfigDetails(RouteBuilder builder) {
+    public void exampleConfigDetails(RouteBuilder builder) {
         builder.restrictCommand("config");
-        return builder.build();
     }
 }
