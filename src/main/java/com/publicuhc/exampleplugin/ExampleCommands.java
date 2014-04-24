@@ -43,7 +43,7 @@ public class ExampleCommands {
             request.sendMessage(ChatColor.RED + "Must supply a key");
             return;
         }
-        request.sendMessage(m_translate.translate(firstArg, m_translate.getLocaleForSender(request.getSender())));
+        request.sendMessage(m_translate.translate(firstArg, request.getLocale()));
     }
 
     @RouteInfo
