@@ -4,7 +4,7 @@ import com.publicuhc.pluginframework.commands.annotation.CommandMethod;
 import com.publicuhc.pluginframework.commands.annotation.RouteInfo;
 import com.publicuhc.pluginframework.commands.requests.CommandRequest;
 import com.publicuhc.pluginframework.commands.requests.SenderType;
-import com.publicuhc.pluginframework.commands.routing.*;
+import com.publicuhc.pluginframework.commands.routes.RouteBuilder;
 import com.publicuhc.pluginframework.configuration.Configurator;
 import com.publicuhc.pluginframework.shaded.inject.Inject;
 import com.publicuhc.pluginframework.translate.Translate;
@@ -48,8 +48,8 @@ public class ExampleCommands {
 
     @RouteInfo
     public void translateDetails(RouteBuilder builder) {
-        builder.restrictCommand("translate");
-        builder.restrictSenderType(SenderType.CONSOLE);
+        builder.restrictCommand("translate")
+                .restrictSenderType(SenderType.CONSOLE);
     }
 
     @CommandMethod

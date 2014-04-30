@@ -6,7 +6,7 @@ import com.publicuhc.pluginframework.commands.exceptions.CommandClassParseExcept
 public class ExamplePlugin extends FrameworkJavaPlugin {
 
     @Override
-    public void onEnable() {
+    public void onFrameworkEnable() {
         try {
             getRouter().registerCommands(ExampleCommands.class);
         } catch (CommandClassParseException e) {
