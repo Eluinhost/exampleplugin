@@ -27,8 +27,7 @@ public class ExampleCommands {
         for(String s : request.getArgs()) {
             builder.append(s).append(" ");
         }
-        builder.substring(0, builder.length());
-        request.sendMessage(builder.toString());
+        request.sendMessage(builder.substring(0, builder.length()-1));
     }
 
     @RouteInfo
@@ -48,8 +47,8 @@ public class ExampleCommands {
 
     @RouteInfo
     public void translateDetails(RouteBuilder builder) {
-        builder.restrictCommand("translate")
-                .restrictSenderType(SenderType.CONSOLE);
+        builder.restrictSenderType(SenderType.CONSOLE)
+                .restrictCommand("translate");
     }
 
     @CommandMethod
@@ -59,6 +58,7 @@ public class ExampleCommands {
 
     @RouteInfo
     public void exampleConfigDetails(RouteBuilder builder) {
-        builder.restrictCommand("config");
+        builder.restrictArgumentCount(1, 1)
+                .restrictCommand("config");
     }
 }
