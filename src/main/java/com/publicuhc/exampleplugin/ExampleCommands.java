@@ -1,14 +1,13 @@
 package com.publicuhc.exampleplugin;
 
-import com.publicuhc.pluginframework.commands.annotation.CommandMethod;
-import com.publicuhc.pluginframework.commands.annotation.RouteInfo;
-import com.publicuhc.pluginframework.commands.requests.CommandRequest;
-import com.publicuhc.pluginframework.commands.requests.SenderType;
-import com.publicuhc.pluginframework.commands.routes.RouteBuilder;
 import com.publicuhc.pluginframework.configuration.Configurator;
+import com.publicuhc.pluginframework.routing.CommandMethod;
 import com.publicuhc.pluginframework.shaded.inject.Inject;
 import com.publicuhc.pluginframework.translate.Translate;
-import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.libs.joptsimple.OptionParser;
+import org.bukkit.craftbukkit.libs.joptsimple.OptionSet;
 
 public class ExampleCommands {
 
@@ -16,49 +15,38 @@ public class ExampleCommands {
     private final Configurator m_configurator;
 
     @Inject
-    protected ExampleCommands(Translate translate, Configurator configurator) {
+    protected ExampleCommands(Translate translate, Configurator configurator)
+    {
         m_translate = translate;
         m_configurator = configurator;
     }
 
-    @CommandMethod
-    public void echoCommand(CommandRequest request) {
+    @CommandMethod(command = "echo")
+    public void echoCommand(Command command, CommandSender sender, OptionSet set)
+    {
         StringBuilder builder = new StringBuilder();
-        for(String s : request.getArgs()) {
+        for(String s : set.nonOptionArguments()) {
             builder.append(s).append(" ");
         }
-        request.sendMessage(builder.substring(0, builder.length()-1));
+        sender.sendMessage(builder.substring(0, builder.length() - 1));
     }
 
-    @RouteInfo
-    public void echoCommandDetails(RouteBuilder builder) {
-        builder.restrictCommand("echo");
+    @CommandMethod(command = "translate", options = true)
+    public void translate(Command command, CommandSender sender, OptionSet set)
+    {
+        String key = (String) set.valueOf("k");
+        sender.sendMessage(m_translate.translate(key, "en"));
     }
 
-    @CommandMethod
-    public void translate(CommandRequest request) {
-        String firstArg = request.getFirstArg();
-        if(null == firstArg) {
-            request.sendMessage(ChatColor.RED + "Must supply a key");
-            return;
-        }
-        request.sendMessage(m_translate.translate(firstArg, request.getLocale()));
+    public String[] translate(OptionParser parser)
+    {
+        parser.accepts("k").withRequiredArg().ofType(String.class).describedAs("Key to check for");
+        return new String[]{"k"};
     }
 
-    @RouteInfo
-    public void translateDetails(RouteBuilder builder) {
-        builder.restrictSenderType(SenderType.CONSOLE)
-                .restrictCommand("translate");
-    }
-
-    @CommandMethod
-    public void exampleConfig(CommandRequest request) {
-        request.sendMessage(m_configurator.getConfig("exampleconfig").getString("exampleString"));
-    }
-
-    @RouteInfo
-    public void exampleConfigDetails(RouteBuilder builder) {
-        builder.restrictArgumentCount(1, 1)
-                .restrictCommand("config");
+    @CommandMethod(command = "config")
+    public void exampleConfig(Command command, CommandSender sender, OptionSet set)
+    {
+        sender.sendMessage(m_configurator.getConfig("exampleconfig").getString("exampleString"));
     }
 }

@@ -1,7 +1,7 @@
 package com.publicuhc.exampleplugin;
 
 import com.publicuhc.pluginframework.FrameworkJavaPlugin;
-import com.publicuhc.pluginframework.commands.exceptions.CommandClassParseException;
+import com.publicuhc.pluginframework.routing.exception.CommandParseException;
 import com.publicuhc.pluginframework.shaded.inject.AbstractModule;
 import com.publicuhc.pluginframework.shaded.inject.Inject;
 
@@ -14,7 +14,7 @@ public class ExamplePlugin extends FrameworkJavaPlugin {
     public void onFrameworkEnable() {
         try {
             getRouter().registerCommands(ExampleCommands.class);
-        } catch (CommandClassParseException e) {
+        } catch(CommandParseException e) {
             e.printStackTrace();
         }
     }
