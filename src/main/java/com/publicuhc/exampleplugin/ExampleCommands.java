@@ -1,13 +1,21 @@
 package com.publicuhc.exampleplugin;
 
+import com.google.common.base.Optional;
 import com.publicuhc.pluginframework.configuration.Configurator;
-import com.publicuhc.pluginframework.routing.CommandMethod;
+import com.publicuhc.pluginframework.routing.annotation.*;
+import com.publicuhc.pluginframework.routing.converters.OnlinePlayerValueConverter;
 import com.publicuhc.pluginframework.shaded.inject.Inject;
+import com.publicuhc.pluginframework.shaded.joptsimple.OptionDeclarer;
+import com.publicuhc.pluginframework.shaded.joptsimple.OptionSet;
 import com.publicuhc.pluginframework.translate.Translate;
-import org.bukkit.command.Command;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.libs.joptsimple.OptionParser;
-import org.bukkit.craftbukkit.libs.joptsimple.OptionSet;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+
+import java.util.List;
+import java.util.Set;
 
 public class ExampleCommands {
 
@@ -21,32 +29,55 @@ public class ExampleCommands {
         m_configurator = configurator;
     }
 
-    @CommandMethod(command = "echo")
-    public void echoCommand(Command command, CommandSender sender, OptionSet set)
+    @CommandMethod("pm")
+    @PermissionRestriction("TEST.PERMISSION")
+    @SenderRestriction(ConsoleCommandSender.class)
+    @CommandOptions({"[arguments]", "m"})
+    public void echoCommand(OptionSet set, ConsoleCommandSender sender, List<Player[]> players, String message)
     {
-        StringBuilder builder = new StringBuilder();
-        for(String s : set.nonOptionArguments()) {
-            builder.append(s).append(" ");
+        Set<Player> p = OnlinePlayerValueConverter.recombinePlayerLists(players);
+
+        for(Player player : p) {
+            player.sendMessage(message);
         }
-        sender.sendMessage(builder.substring(0, builder.length() - 1));
+
+        sender.sendMessage(message);
     }
 
-    @CommandMethod(command = "translate", options = true)
-    public void translate(Command command, CommandSender sender, OptionSet set)
+    @OptionsMethod
+    public void echoCommand(OptionDeclarer declarer)
+    {
+        declarer.accepts("m", "Message to send").withRequiredArg().required();
+        declarer.nonOptions().withValuesConvertedBy(new OnlinePlayerValueConverter(true));
+    }
+
+    @CommandMethod("translate")
+    @CommandOptions
+    public void translate(OptionSet set, CommandSender sender)
     {
         String key = (String) set.valueOf("k");
         sender.sendMessage(m_translate.translate(key, "en"));
     }
 
-    public String[] translate(OptionParser parser)
+    @OptionsMethod
+    public void translate(OptionDeclarer parser)
     {
-        parser.accepts("k").withRequiredArg().ofType(String.class).describedAs("Key to check for");
-        return new String[]{"k"};
+        parser.accepts("k")
+                .withRequiredArg()
+                .ofType(String.class)
+                .required()
+                .describedAs("Key to check for");
     }
 
-    @CommandMethod(command = "config")
-    public void exampleConfig(Command command, CommandSender sender, OptionSet set)
+    @CommandMethod("config")
+    public void exampleConfig(OptionSet set, CommandSender sender)
     {
-        sender.sendMessage(m_configurator.getConfig("exampleconfig").getString("exampleString"));
+        Optional<FileConfiguration> configuration = m_configurator.getConfig("exampleconfig");
+        if(!configuration.isPresent()) {
+            sender.sendMessage(ChatColor.RED + "Config file failed to load");
+            return;
+        }
+
+        sender.sendMessage(configuration.get().getString("exampleString"));
     }
 }

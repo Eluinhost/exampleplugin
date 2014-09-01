@@ -1,19 +1,22 @@
 package com.publicuhc.exampleplugin;
 
 import com.publicuhc.pluginframework.FrameworkJavaPlugin;
+import com.publicuhc.pluginframework.routing.Router;
 import com.publicuhc.pluginframework.routing.exception.CommandParseException;
 import com.publicuhc.pluginframework.shaded.inject.AbstractModule;
 import com.publicuhc.pluginframework.shaded.inject.Inject;
+import com.publicuhc.pluginframework.shaded.inject.Module;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ExamplePlugin extends FrameworkJavaPlugin {
 
+    @Inject private Router router;
+
     @Override
     public void onFrameworkEnable() {
         try {
-            getRouter().registerCommands(ExampleCommands.class);
+            router.registerCommands(ExampleCommands.class);
         } catch(CommandParseException e) {
             e.printStackTrace();
         }
@@ -30,8 +33,8 @@ public class ExamplePlugin extends FrameworkJavaPlugin {
     }
 
     @Override
-    public List<AbstractModule> initialModules() {
-        List<AbstractModule> modules = new ArrayList<AbstractModule>();
+    public void initialModules(List<Module> modules) {
+        modules.addAll(getDefaultModules());
         modules.add(new AbstractModule() {
             @Override
             protected void configure() {
@@ -39,6 +42,5 @@ public class ExamplePlugin extends FrameworkJavaPlugin {
                 bind(ExampleInterface.class).to(ExampleConcrete.class);
             }
         });
-        return modules;
     }
 }

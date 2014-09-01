@@ -6,10 +6,10 @@ author: ghowden/Eluinhost
 website: publicuhc.com
 database: false
 commands:
-  echo:
-    description: Echo whatever follows to the sender
-    usage: /<command> message to echo
-    aliases: [exampleecho]
+  pm:
+    description: Message players with a message
+    usage: /<command> -m "message to send" player1 player2 player3/*
+    aliases: [examplepm]
   translate:
     description: Returns the translated key
     usage: /<command> keyname
